@@ -27,7 +27,13 @@ public:
 	}
 
 	void print_grid(){
-		std::cout << grid_data[0][0] << std::endl;
+		for(int x = 0; x < GRID_SIZE;x++){
+			for(int y = 0; y < GRID_SIZE; y++){
+				std::cout << grid_data[x][y] << " ";
+			}
+			std::cout << std::endl;
+		}
+
 	}
 
 };
