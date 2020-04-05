@@ -5,6 +5,7 @@
 #include <stack>
 
 #define GRID_SIZE 4
+#define COST_PER_MOVE 1
 
 class A_star_grid_info{
 private:
@@ -57,10 +58,18 @@ public:
 		return this->parent;
 	}
 
-	void calculate_cost_f(int cost){
-		this->cost_f = cost;
+	void calculate_cost_f(){
+		this->cost_f = this->cost_g + this->cost_h;
 	}
 
+	void calculate_cost_g(int parent_cost_g, int distance_cost){
+		this->cost_g = parent_cost_g + distance_cost;
+	}
+
+	void calculate_cost_h(int goal_x, int goal_y){
+		//Diagonal Distance
+		this->cost_h = std::max( abs(this->position_x - goal_x), abs(this->position_y - goal_y));
+	}
 	void insert_parent(A_star_grid_info* parent){
 		this->parent = parent;
 	}
@@ -81,8 +90,7 @@ A_star_grid_info minimum_cost_f(std::stack<A_star_grid_info> list){
 }
 
 //TODO: Need to add grid here to update the map with the best route
-void Astar_algorithm(int start_x, int start_y, int end_x, int end_y){
-	std::cout << end_x << start_x << start_y << " " << end_y << std::endl;
+void Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 	
 	A_star_grid_info start_position(start_x, start_y);
 
@@ -123,7 +131,18 @@ void Astar_algorithm(int start_x, int start_y, int end_x, int end_y){
 				
 				A_star_grid_info successor_position_info(successor_x, successor_y);
 				successor_position_info.insert_parent(&current_position_info);
-					
+				
+				//Stop search if we are at the end
+				if(successor_x == goal_x && successor_y == goal_y){
+					return;
+				}
+
+				successor_position_info.calculate_cost_g(current_position_info.get_cost_g(), COST_PER_MOVE);
+				//std::cout << successor_position_info.get_cost_g() << " : " << successor_position_info.get_cost_f() << std::endl; 
+				successor_position_info.calculate_cost_h(goal_x, goal_y);
+
+				successor_position_info.calculate_cost_f();
+				//std::cout << "F: " << successor_position_info.get_cost_f() << std::endl;
 
 			}
 		}
