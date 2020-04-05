@@ -1,7 +1,5 @@
 #include "Astar_algorithm.h"
 
-#define GRID_SIZE 4
-
 class grid{
 private:
 	int**grid_data;
