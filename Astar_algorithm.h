@@ -89,6 +89,29 @@ A_star_grid_info minimum_cost_f(std::stack<A_star_grid_info> list){
 	
 }
 
+void delete_element_stack(std::stack<A_star_grid_info> &list, A_star_grid_info element){
+	std::stack<A_star_grid_info> save_list;
+
+	while(!list.empty()){ 
+		//TODO: Implement operator== for the A_star_grid_info class
+		if ((list.top().get_position_x() == element.get_position_x()) && (list.top().get_position_y() == element.get_position_y()) 
+			&& (list.top().get_cost_f() == element.get_cost_f()) && (list.top().get_parent() == element.get_parent())){
+			list.pop();
+			break;
+		}	
+		save_list.push(list.top());
+		list.pop();
+	}
+
+	//Put the elements back into the list
+	while(!save_list.empty()){
+		list.push(save_list.top());
+		save_list.pop();
+	}
+
+
+}
+
 bool find_lower_cost_f(std::stack<A_star_grid_info> list, int successor_x, int successor_y, int successor_cost_f){
 	while(!list.empty()){
 		if((list.top()).get_position_x() == successor_x && (list.top()).get_position_y() == successor_y){
@@ -115,8 +138,7 @@ void Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 		//Find the minimum F in the open stack
 		current_position_info = minimum_cost_f(open_list);
 		//std::cout << current_position_info.get_cost_f() << std::endl;
-		//TODO::I NEED to fix the POP here (I'm not popping the right element
-		open_list.pop();
+		delete_element_stack(open_list, current_position_info);
 
 		//Generate successor paths
 		int successor_x, successor_y;
@@ -143,6 +165,7 @@ void Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 				}
 				
 				A_star_grid_info successor_position_info(successor_x, successor_y);
+				//TODO: This saves current_position_info I want to save the parent node (they are different)
 				successor_position_info.insert_parent(&current_position_info);
 				std::cout << "succussor: " << successor_x << " " << successor_y << " parent: " << current_position_info.get_position_x() << " " << current_position_info.get_position_y() << " F: " << current_position_info.get_cost_f() << std::endl;
 
