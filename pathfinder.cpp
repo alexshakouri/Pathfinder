@@ -50,11 +50,9 @@ int main(){
 	g1.insert_point(start_x,start_y,1);
 	g1.insert_point(end_x,end_y,1);
 
-	g1.print_grid();
+	//g1.print_grid();
 
-	int total_cost = 0;
-	total_cost = Astar_algorithm(start_x,start_y,end_x,end_y);
-	std::cout << total_cost << std::endl;
+	Astar_algorithm(start_x,start_y,end_x,end_y);
 
 	return 0;
 }
