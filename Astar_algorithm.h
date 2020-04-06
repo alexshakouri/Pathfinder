@@ -5,7 +5,8 @@
 #include <stack>
 #include <memory>
 
-#define GRID_SIZE 4
+//TODO:Change where GRID_SIZE is so it is with the definition of grid
+#define GRID_SIZE 20
 #define COST_PER_MOVE 1
 
 class grid_cost{
@@ -59,7 +60,7 @@ public:
 	}
 	void calculate_cost_h(int goal_x, int goal_y){
 		//Diagonal Distance for 8 possible moves
-		this->cost_h = std::max( abs(this->position_x - goal_x), abs(this->position_y - goal_y));
+		this->cost_h = abs(this->position_x - goal_x) + abs(this->position_y - goal_y);
 	}
 	void insert_parent(std::shared_ptr<grid_cost> parent){
 		this->parent = parent;
@@ -77,7 +78,6 @@ std::shared_ptr<grid_cost> minimum_cost_f(std::stack<std::shared_ptr<grid_cost>>
 		list.pop();
 	}	
 	return min_f;
-	
 }
 
 void delete_element_stack(std::stack<std::shared_ptr<grid_cost>> &list, grid_cost element){
@@ -99,8 +99,6 @@ void delete_element_stack(std::stack<std::shared_ptr<grid_cost>> &list, grid_cos
 		list.push(save_list.top());
 		save_list.pop();
 	}
-
-
 }
 
 bool find_lower_cost_f(std::stack<std::shared_ptr<grid_cost>> list, int successor_x, int successor_y, int successor_cost_f){
@@ -114,7 +112,7 @@ bool find_lower_cost_f(std::stack<std::shared_ptr<grid_cost>> list, int successo
 	return false;
 }
 
-//TODO: Need to add grid here to update the map with the best route
+//TODO:Implement Obstacles (Check grid and if obstacle then skip)
 std::shared_ptr<grid_cost> Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 	
 	std::shared_ptr<grid_cost> start_position(new grid_cost(start_x, start_y));
@@ -157,10 +155,6 @@ std::shared_ptr<grid_cost> Astar_algorithm(int start_x, int start_y, int goal_x,
 
 				//Stop search if we are at the end
 				if(successor_x == goal_x && successor_y == goal_y){
-					//while(successor_position != NULL){
-					//std::cout << successor_position->get_position_x() <<  " : " << successor_position->get_position_y() << " F: " << successor_position->get_cost_f() << std::endl;
-					//successor_position = (successor_position->get_parent());
-					//}
 					return successor_position;
 				}
 
