@@ -77,24 +77,16 @@ public:
 
 };
 
-std::shared_ptr<grid_cost> minimum_cost_f(std::stack<std::shared_ptr<grid_cost>> &list){
+std::shared_ptr<grid_cost> minimum_cost_f(std::stack<std::shared_ptr<grid_cost>> list){
 	std::shared_ptr<grid_cost> min_f = list.top();
-	std::stack<std::shared_ptr<grid_cost>> save_list;
 	
-	save_list.push(list.top());
 	list.pop();
 	while(!list.empty()){	
 		if((list.top())->get_cost_f() < min_f->get_cost_f()){
 			min_f = (list.top());
 		}
-		save_list.push(list.top());
 		list.pop();
 	}	
-
-	while(!save_list.empty()){
-		list.push(save_list.top());
-		save_list.pop();
-	}
 
 	return min_f;
 	
