@@ -40,7 +40,7 @@ int main(){
 
 	grid g1;
 	int start_x = 0;
-	int start_y = 0;
+	int start_y = 3;
 	int end_x = 3;
 	int end_y = 3;
 
@@ -50,7 +50,14 @@ int main(){
 
 	//g1.print_grid();
 
-	Astar_algorithm(start_x,start_y,end_x,end_y);
+	std::shared_ptr<grid_cost> Astar_path;
+	Astar_path = Astar_algorithm(start_x,start_y,end_x,end_y);
+
+	while(Astar_path !=NULL){
+		std::cout << "[x,y] = " << Astar_path->get_position_x() << " , " << Astar_path->get_position_y() << std::endl;
+		Astar_path = Astar_path->get_parent();
+	}
+
 
 	return 0;
 }
