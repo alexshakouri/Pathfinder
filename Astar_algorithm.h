@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stack>
+#include <memory>
 
 #define GRID_SIZE 4
 #define COST_PER_MOVE 1
@@ -11,7 +12,7 @@ class A_star_grid_info{
 private:
 	int position_x, position_y;
 	int cost_g, cost_h, cost_f;
-	A_star_grid_info* parent;
+	std::shared_ptr<A_star_grid_info> parent;
 
 public:
 	A_star_grid_info(int x, int y){
@@ -54,7 +55,7 @@ public:
 		return this->cost_f;
 	}
 
-	A_star_grid_info* get_parent(){
+	std::shared_ptr<A_star_grid_info> get_parent(){
 		return this->parent;
 	}
 
@@ -70,21 +71,21 @@ public:
 		//Diagonal Distance for 8 possible moves
 		this->cost_h = std::max( abs(this->position_x - goal_x), abs(this->position_y - goal_y));
 	}
-	void insert_parent(A_star_grid_info* parent){
+	void insert_parent(std::shared_ptr<A_star_grid_info> parent){
 		this->parent = parent;
 	}
 
 };
 
-A_star_grid_info* minimum_cost_f(std::stack<A_star_grid_info> &list){
-	A_star_grid_info* min_f = &(list.top());
-	std::stack<A_star_grid_info> save_list;
+std::shared_ptr<A_star_grid_info> minimum_cost_f(std::stack<std::shared_ptr<A_star_grid_info>> &list){
+	std::shared_ptr<A_star_grid_info> min_f = list.top();
+	std::stack<std::shared_ptr<A_star_grid_info>> save_list;
 	
 	save_list.push(list.top());
 	list.pop();
 	while(!list.empty()){	
-		if((list.top()).get_cost_f() < min_f->get_cost_f()){
-			min_f = &(list.top());
+		if((list.top())->get_cost_f() < min_f->get_cost_f()){
+			min_f = (list.top());
 		}
 		save_list.push(list.top());
 		list.pop();
@@ -99,14 +100,14 @@ A_star_grid_info* minimum_cost_f(std::stack<A_star_grid_info> &list){
 	
 }
 
-void delete_element_stack(std::stack<A_star_grid_info> &list, A_star_grid_info element){
-	std::stack<A_star_grid_info> save_list;
+void delete_element_stack(std::stack<std::shared_ptr<A_star_grid_info>> &list, A_star_grid_info element){
+	std::stack<std::shared_ptr<A_star_grid_info>> save_list;
 
 	while(!list.empty()){ 
 		//TODO: Implement operator== for the A_star_grid_info class
 		//TODO: Create error checks here
-		if ((list.top().get_position_x() == element.get_position_x()) && (list.top().get_position_y() == element.get_position_y()) 
-			&& (list.top().get_cost_f() == element.get_cost_f()) && (list.top().get_parent() == element.get_parent())){
+		if ((list.top()->get_position_x() == element.get_position_x()) && (list.top()->get_position_y() == element.get_position_y()) 
+			&& (list.top()->get_cost_f() == element.get_cost_f()) && (list.top()->get_parent() == element.get_parent())){
 			list.pop();
 			break;
 		}	
@@ -123,11 +124,11 @@ void delete_element_stack(std::stack<A_star_grid_info> &list, A_star_grid_info e
 
 }
 
-bool find_lower_cost_f(std::stack<A_star_grid_info> list, int successor_x, int successor_y, int successor_cost_f){
+bool find_lower_cost_f(std::stack<std::shared_ptr<A_star_grid_info>> list, int successor_x, int successor_y, int successor_cost_f){
 	while(!list.empty()){
-		if((list.top()).get_position_x() == successor_x && (list.top()).get_position_y() == successor_y){
+		if((list.top())->get_position_x() == successor_x && (list.top())->get_position_y() == successor_y){
 			//TODO: Make sure that there can bever be multiple elements in the list that have the same (x,y)
-			return ((list.top()).get_cost_f() < successor_cost_f);
+			return ((list.top())->get_cost_f() < successor_cost_f);
 		}
 		list.pop();
 	}
@@ -137,14 +138,14 @@ bool find_lower_cost_f(std::stack<A_star_grid_info> list, int successor_x, int s
 //TODO: Need to add grid here to update the map with the best route
 void Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 	
-	A_star_grid_info start_position(start_x, start_y);
+	std::shared_ptr<A_star_grid_info> start_position(new A_star_grid_info(start_x, start_y));
 
-	std::stack<A_star_grid_info> open_list;
-	std::stack<A_star_grid_info> closed_list;
+	std::stack<std::shared_ptr<A_star_grid_info>> open_list;
+	std::stack<std::shared_ptr<A_star_grid_info>> closed_list;
 
 	open_list.push(start_position);
 	
-	A_star_grid_info *current_position_info;
+	std::shared_ptr<A_star_grid_info> current_position_info;
 	while(!open_list.empty()){
 		//Find the minimum F in the open stack
 		current_position_info = minimum_cost_f(open_list);
@@ -175,37 +176,34 @@ void Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 					continue;
 				}
 				
-				A_star_grid_info successor_position_info(successor_x, successor_y);
-				//TODO: This saves current_position_info I want to save the parent node (they are different)
-				successor_position_info.insert_parent(current_position_info);
+				std::shared_ptr<A_star_grid_info> successor_position_info(new A_star_grid_info(successor_x, successor_y));
+				successor_position_info->insert_parent(current_position_info);
 				std::cout << "succussor: " << successor_x << " " << successor_y << " parent: " << current_position_info->get_position_x() << " " << current_position_info->get_position_y() << " F: " << current_position_info->get_cost_f() << std::endl;
 
 
 				//Stop search if we are at the end
 				if(successor_x == goal_x && successor_y == goal_y){
-					while(successor_position_info.get_parent() != NULL){
-					std::cout << successor_position_info.get_position_x() <<  " : " << successor_position_info.get_position_y() << " F: " << successor_position_info.get_cost_f() << std::endl;
-					std::cout << successor_position_info.get_parent()->get_position_x() <<  " : " << successor_position_info.get_parent()->get_position_y() << " F: " << successor_position_info.get_parent()->get_cost_f() << std::endl;
-					std::cout << successor_position_info.get_parent()->get_parent()->get_position_x() <<  " : " << successor_position_info.get_parent()->get_parent()->get_position_y() << " F: " << successor_position_info.get_parent()->get_parent()->get_cost_f() << std::endl;
-					successor_position_info = *(successor_position_info.get_parent());
-					break;
+					while(successor_position_info->get_parent() != NULL){
+					std::cout << successor_position_info->get_position_x() <<  " : " << successor_position_info->get_position_y() << " F: " << successor_position_info->get_cost_f() << std::endl;
+					std::cout << successor_position_info->get_parent()->get_position_x() <<  " : " << successor_position_info->get_parent()->get_position_y() << " F: " << successor_position_info->get_parent()->get_cost_f() << std::endl;
+					successor_position_info = (successor_position_info->get_parent());
 					}
 					return;
 				}
 
-				successor_position_info.calculate_cost_g(current_position_info->get_cost_g(), COST_PER_MOVE);
-				//std::cout << successor_position_info.get_cost_g() << " : " << successor_position_info.get_cost_f() << std::endl; 
-				successor_position_info.calculate_cost_h(goal_x, goal_y);
+				successor_position_info->calculate_cost_g(current_position_info->get_cost_g(), COST_PER_MOVE);
+				//std::cout << successor_position_info->get_cost_g() << " : " << successor_position_info->get_cost_f() << std::endl; 
+				successor_position_info->calculate_cost_h(goal_x, goal_y);
 
-				successor_position_info.calculate_cost_f();
-				//std::cout << "F: " << successor_position_info.get_cost_f() << std::endl;
-				//std::cout << " pos:" << successor_position_info.get_position_x() << " " << successor_position_info.get_position_y() << std::endl;
+				successor_position_info->calculate_cost_f();
+				//std::cout << "F: " << successor_position_info->get_cost_f() << std::endl;
+				//std::cout << " pos:" << successor_position_info->get_position_x() << " " << successor_position_info->get_position_y() << std::endl;
 
-				if(find_lower_cost_f(open_list, successor_position_info.get_position_x(), successor_position_info.get_position_y(), successor_position_info.get_cost_f())){
+				if(find_lower_cost_f(open_list, successor_position_info->get_position_x(), successor_position_info->get_position_y(), successor_position_info->get_cost_f())){
 					continue;
 				}
 
-				if(find_lower_cost_f(closed_list, successor_position_info.get_position_x(), successor_position_info.get_position_y(), successor_position_info.get_cost_f())){
+				if(find_lower_cost_f(closed_list, successor_position_info->get_position_x(), successor_position_info->get_position_y(), successor_position_info->get_cost_f())){
 					continue;
 				}
 
@@ -213,7 +211,7 @@ void Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
 			}
 		}
 		//After going through all the successors push current node to closed_list
-		closed_list.push(*current_position_info);
+		closed_list.push(current_position_info);
 	}
 	
 
