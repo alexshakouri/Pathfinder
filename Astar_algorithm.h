@@ -5,8 +5,6 @@
 #include <stack>
 #include <memory>
 
-//TODO:Change where GRID_SIZE is so it is with the definition of grid
-#define GRID_SIZE 20
 #define COST_PER_MOVE 1
 
 class grid_cost{
@@ -17,7 +15,8 @@ private:
 
 public:
 	grid_cost(int x, int y){
-		//TODO: Create exception throwing for x,y 
+		//TODO: Create exception throwing for x,y
+		//TODO: Implement typename point(x,y) 
 		this->position_x = x;
 		this->position_y = y;
 		this->cost_g = 0;
