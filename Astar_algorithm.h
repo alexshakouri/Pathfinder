@@ -18,10 +18,7 @@ private:
 public:
 	grid_cost(Point point){
 		//TODO: Create exception throwing for x,y
-		//TODO: Implement typename point(x,y)
 		this->position = point;
-		//this->position.x = x;
-		//this->position.y = y;
 		this->cost_g = 0;
 		this->cost_h = 0;
 		this->cost_f = 0;
@@ -139,7 +136,6 @@ void insert_path(grid *grid1, std::shared_ptr<grid_cost> Astar_path){
 }
 
 
-//TODO:Implement Obstacles (Check grid and if obstacle then skip)
 std::shared_ptr<grid_cost> Astar_algorithm(grid *grid1, Point start_point, Point goal_point){
 	
 	std::shared_ptr<grid_cost> start_position(new grid_cost(start_point));
@@ -173,8 +169,6 @@ std::shared_ptr<grid_cost> Astar_algorithm(grid *grid1, Point start_point, Point
 				//Skip parent node position
 				if(current_position->get_parent() != NULL){
 						if((current_position->get_parent())->get_position() == successor_point){
-						//if((current_position->get_parent())->get_position_x() == successor_x && 
-						//		(current_position->get_parent())->get_position_y() == successor_y){
 							continue;
 						}
 				}
