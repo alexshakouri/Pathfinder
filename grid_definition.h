@@ -4,6 +4,11 @@
 #define GRID_SIZE 20
 #define BLOCKAGE ' '
 
+struct Point{
+	int x;
+	int y;
+};
+
 class grid{
 private:
 	char** grid_data;
@@ -26,8 +31,8 @@ public:
 		delete[] this->grid_data; 
 	}
 
-	void insert_point(int x, int y, char value){
-		this->grid_data[x][y] = value;
+	void insert_point(Point position, char value){
+		this->grid_data[position.x][position.y] = value;
 	}
 
 	void print_grid(){
@@ -39,8 +44,8 @@ public:
 		}
 	}
 
-	bool check_blockage(int x, int y){
-		return (this->grid_data[x][y] == BLOCKAGE);
+	bool check_blockage(Point position){
+		return (this->grid_data[position.x][position.y] == BLOCKAGE);
 	}
 };
 
