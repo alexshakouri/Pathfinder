@@ -123,7 +123,7 @@ void insert_path(grid *grid1, std::shared_ptr<grid_cost> Astar_path){
 
 
 //TODO:Implement Obstacles (Check grid and if obstacle then skip)
-std::shared_ptr<grid_cost> Astar_algorithm(grid *grid_data, int start_x, int start_y, int goal_x, int goal_y){
+std::shared_ptr<grid_cost> Astar_algorithm(grid *grid1, int start_x, int start_y, int goal_x, int goal_y){
 	
 	std::shared_ptr<grid_cost> start_position(new grid_cost(start_x, start_y));
 
@@ -148,6 +148,11 @@ std::shared_ptr<grid_cost> Astar_algorithm(grid *grid_data, int start_x, int sta
 				successor_x = x + current_position->get_position_x();
 				successor_y = y + current_position->get_position_y();
 				
+				//Skip blockages in the path
+				if(grid1->check_blockage(current_position->get_position_x(), current_position->get_position_y())){
+					continue;
+				}	
+
 				//Skip parent node position
 				if(current_position->get_parent() != NULL){
 						if((current_position->get_parent())->get_position_x() == successor_x && 
@@ -165,7 +170,6 @@ std::shared_ptr<grid_cost> Astar_algorithm(grid *grid_data, int start_x, int sta
 
 				//Stop search if we are at the end
 				if(successor_x == goal_x && successor_y == goal_y){
-					grid_data->insert_point(goal_x,goal_y, 'F');
 					return successor_position;
 				}
 

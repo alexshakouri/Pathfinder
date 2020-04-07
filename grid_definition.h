@@ -2,6 +2,7 @@
 #define GRID_DEFINITION_H
 
 #define GRID_SIZE 20
+#define BLOCKAGE ' '
 
 class grid{
 private:
@@ -36,6 +37,10 @@ public:
 			}
 			std::cout << std::endl;
 		}
+	}
+
+	bool check_blockage(int x, int y){
+		return (this->grid_data[x][y] == BLOCKAGE);
 	}
 };
 
