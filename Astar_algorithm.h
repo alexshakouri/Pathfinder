@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stack>
 #include <memory>
+#include <math.h>
 #include "grid_definition.h"
 
 #define COST_PER_MOVE 1
@@ -60,7 +61,9 @@ public:
 	}
 	void calculate_cost_h(int goal_x, int goal_y){
 		//Diagonal Distance for 8 possible moves
-		this->cost_h = abs(this->position_x - goal_x) + abs(this->position_y - goal_y);
+		int dx = abs(this->position_x - goal_x); 
+		int dy = abs(this->position_y - goal_y);	
+		this->cost_h = sqrt((dx*dx) + (dy*dy));
 	}
 	void insert_parent(std::shared_ptr<grid_cost> parent){
 		this->parent = parent;
