@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stack>
 #include <memory>
+#include "grid_definition.h"
 
 #define COST_PER_MOVE 1
 
@@ -111,8 +112,18 @@ bool find_lower_cost_f(std::stack<std::shared_ptr<grid_cost>> list, int successo
 	return false;
 }
 
+void insert_path(grid *grid1, std::shared_ptr<grid_cost> Astar_path){
+	//skip the start and final point of the path
+	Astar_path = Astar_path->get_parent();
+	while(Astar_path->get_parent() != NULL){
+		grid1->insert_point(Astar_path->get_position_x(), Astar_path->get_position_y(),'|');
+		Astar_path = Astar_path->get_parent();
+	}
+}
+
+
 //TODO:Implement Obstacles (Check grid and if obstacle then skip)
-std::shared_ptr<grid_cost> Astar_algorithm(int start_x, int start_y, int goal_x, int goal_y){
+std::shared_ptr<grid_cost> Astar_algorithm(grid *grid_data, int start_x, int start_y, int goal_x, int goal_y){
 	
 	std::shared_ptr<grid_cost> start_position(new grid_cost(start_x, start_y));
 
@@ -154,6 +165,7 @@ std::shared_ptr<grid_cost> Astar_algorithm(int start_x, int start_y, int goal_x,
 
 				//Stop search if we are at the end
 				if(successor_x == goal_x && successor_y == goal_y){
+					grid_data->insert_point(goal_x,goal_y, 'F');
 					return successor_position;
 				}
 

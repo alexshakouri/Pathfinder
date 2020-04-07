@@ -1,4 +1,4 @@
-#include "grid_definition.h"
+#include "Astar_algorithm.h"
 
 int main(){
 
@@ -13,9 +13,9 @@ int main(){
 	g1.insert_point(end_x,end_y,'F');
 
 	std::shared_ptr<grid_cost> Astar_path;
-	Astar_path = Astar_algorithm(start_x,start_y,end_x,end_y);
+	Astar_path = Astar_algorithm(&g1,start_x,start_y,end_x,end_y);
 
-	g1.insert_path(Astar_path);
+	insert_path(&g1,Astar_path);
 	g1.print_grid();	
 
 	return 0;
