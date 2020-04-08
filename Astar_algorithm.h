@@ -9,11 +9,11 @@
 
 #define COST_PER_MOVE 1
 
-//TODO:Change name of Astar_cost
 class Astar_cost{
 private:
 	Point position;
-	int cost_g, cost_h, cost_f;
+	int cost_g;
+        double cost_h, cost_f;
 	std::shared_ptr<Astar_cost> parent;
 
 public:
@@ -47,10 +47,10 @@ public:
 	int get_cost_g() const{
 		return this->cost_g;
 	}
-	int get_cost_h() const{
+	double get_cost_h() const{
 		return this->cost_h;
 	}
-	int get_cost_f() const{
+	double get_cost_f() const{
 		return this->cost_f;
 	}
 	std::shared_ptr<Astar_cost> get_parent() const{
@@ -64,8 +64,8 @@ public:
 	}
 	void calculate_cost_h(Point goal){
 		//Diagonal Distance for 8 possible moves
-		int dx = abs(this->position.x - goal.x); 
-		int dy = abs(this->position.y - goal.y);	
+		double dx = abs(this->position.x - goal.x); 
+		double dy = abs(this->position.y - goal.y);	
 		this->cost_h = sqrt((dx*dx) + (dy*dy));
 	}
 	void insert_parent(std::shared_ptr<Astar_cost> parent){

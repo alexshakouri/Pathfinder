@@ -5,17 +5,17 @@ int main(){
 
 	grid g1;
 	//TODO:Implement test cases
-	Point start_point = {0,3};
-	Point end_point = {0,19};
+	Point start_point = {0,8};
+	Point end_point = {9,9};
 	//Define start and end point
 	g1.insert_point(start_point,'S');
 	g1.insert_point(end_point,'F');
 
 	//Insert blockage
-	Point p1 = {18,19};
-	Point p2 = {18,18};
-	Point p3 = {18,17};
-	Point p4 = {18,16};
+	Point p1 = {8,9};
+	Point p2 = {8,8};
+	Point p3 = {8,7};
+	Point p4 = {8,6};
 	g1.insert_point(p1,BLOCKAGE);
 	g1.insert_point(p2,BLOCKAGE);
 	g1.insert_point(p3,BLOCKAGE);
@@ -118,12 +118,7 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 					continue;
 				}
 				successor_point.x = x + current_position->get_position_x();
-				successor_point.y = y + current_position->get_position_y();
-
-				//Skip blockages in the path
-				if(grid1->check_blockage(current_position->get_position())){
-					continue;
-				}	
+				successor_point.y = y + current_position->get_position_y();	
 
 				//Skip parent node position
 				if(current_position->get_parent() != NULL){
@@ -135,7 +130,13 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 				if(successor_point.x < 0 || successor_point.y < 0 || successor_point.x > GRID_SIZE-1 || successor_point.y > GRID_SIZE-1){
 					continue;
 				}
-				
+
+				//Skip blockages in the path
+				if(grid1->check_blockage(successor_point)){
+					continue;
+				}
+
+				//std::cout << successor_point.x << " : " << successor_point.y << std::endl;	
 				std::shared_ptr<Astar_cost> successor_position(new Astar_cost(successor_point));
 				successor_position->insert_parent(current_position);
 
