@@ -1,7 +1,7 @@
 #ifndef GRID_DEFINITION_H
 #define GRID_DEFINITION_H
 
-#define GRID_SIZE 10
+#define GRID_SIZE 20
 #define BLOCKAGE ' '
 
 struct Point{
