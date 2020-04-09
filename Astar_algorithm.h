@@ -12,7 +12,7 @@
 class Astar_cost{
 private:
 	Point position;
-	int cost_g;
+	double cost_g;
         double cost_h, cost_f;
 	std::shared_ptr<Astar_cost> parent;
 
@@ -44,7 +44,7 @@ public:
 	int get_position_y() const{
 		return this->position.y;
 	}
-	int get_cost_g() const{
+	double get_cost_g() const{
 		return this->cost_g;
 	}
 	double get_cost_h() const{
@@ -59,7 +59,11 @@ public:
 	void calculate_cost_f(){
 		this->cost_f = this->cost_g + this->cost_h;
 	}
-	void calculate_cost_g(int parent_cost_g, int distance_cost){
+	void calculate_cost_g(double parent_cost_g, double distance_cost){
+		//Add penalty for diagonal similar to distance
+		if( (abs(this->position.x - this->parent->position.x)) + (abs(this->position.y - this->parent->position.y)) == 2){
+			distance_cost = distance_cost * sqrt(2.0);
+		}
 		this->cost_g = parent_cost_g + distance_cost;
 	}
 	void calculate_cost_h(Point goal){
