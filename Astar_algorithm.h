@@ -4,7 +4,6 @@
 #include <iostream>
 #include <stack>
 #include <memory>
-#include <math.h>
 #include "grid.h"
 
 #define COST_PER_MOVE 1
