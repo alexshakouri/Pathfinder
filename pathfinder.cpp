@@ -1,5 +1,5 @@
 #include "Astar_algorithm.h"
-#include "grid_definition.h"
+#include "grid.h"
 
 int main(){
 
@@ -20,6 +20,15 @@ int main(){
 	g1.insert_point(p2,BLOCKAGE);
 	g1.insert_point(p3,BLOCKAGE);
 	g1.insert_point(p4,BLOCKAGE);
+	
+	Point p5 = {0,4};
+	Point p6 = {1,4};
+	Point p7 = {1,3};
+	Point p8 = {1,2};
+	g1.insert_point(p5,BLOCKAGE);
+	g1.insert_point(p6,BLOCKAGE);
+	g1.insert_point(p7,BLOCKAGE);
+	g1.insert_point(p8,BLOCKAGE);
 
 
 	std::shared_ptr<Astar_cost> Astar_path;
