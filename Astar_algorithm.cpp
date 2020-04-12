@@ -137,7 +137,6 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 		//Find the minimum F in the open stack
 		//current_position = minimum_cost_f(open_list);
 		//delete_element_stack(open_list, *current_position);
-
 		current_position = open_list.top();
 		open_list.pop();
 
@@ -158,12 +157,12 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 						}
 				}
 				//Need values that are within the GRID_SIZE
-				if(successor_point.x < 0 || successor_point.y < 0 || successor_point.x > GRID_SIZE-1 || successor_point.y > GRID_SIZE-1){
+				if(grid1->not_within_grid(successor_point)){
 					continue;
 				}
 
 				//Skip blockages in the path
-				if(grid1->check_blockage(successor_point)){
+				if(grid1->within_blockage(successor_point)){
 					continue;
 				}
 

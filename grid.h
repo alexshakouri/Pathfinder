@@ -9,7 +9,6 @@ struct Point{
 	int y;
 };
 
-//TODO: Implement error check for outside GRID_SIZE
 class grid{
 private:
 	char** grid_data;
@@ -22,7 +21,9 @@ public:
 
 	void print_grid();
 
-	bool check_blockage(Point position);
+	bool within_blockage(Point position);
+
+	bool not_within_grid(Point position);
 };
 
 #endif // GRID_H

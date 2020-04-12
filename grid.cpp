@@ -20,6 +20,9 @@ grid::~grid(){
 }
 
 void grid::insert_point(Point position, char value){
+	if(not_within_grid(position)){
+		throw position;
+	}
 	this->grid_data[position.x][position.y] = value;
 }
 
@@ -32,6 +35,10 @@ void grid::print_grid(){
 	}
 }
 
-bool grid::check_blockage(Point position){
+bool grid::within_blockage(Point position){
 	return (this->grid_data[position.x][position.y] == BLOCKAGE);
+}
+
+bool grid::not_within_grid(Point position){
+	return ((position.x < 0) || (position.y) < 0 || (position.x > GRID_SIZE-1) || (position.y > GRID_SIZE-1));
 }
