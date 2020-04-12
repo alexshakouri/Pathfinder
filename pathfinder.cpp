@@ -1,5 +1,6 @@
 #include "Astar_algorithm.h"
 #include "grid.h"
+#include <chrono>
 
 int main(){
 
@@ -32,7 +33,13 @@ int main(){
 
 
 	std::shared_ptr<Astar_cost> Astar_path;
+	auto start_time = std::chrono::steady_clock::now();
 	Astar_path = Astar_algorithm(&g1,start_point,end_point);
+	auto finish_time = std::chrono::steady_clock::now();
+
+	std::chrono::duration<double> diff = finish_time - start_time;
+
+	std::cout << "Time executed: "<< diff.count() << "s" << std::endl;
 
 	insert_path(&g1,Astar_path);
 	g1.print_grid();	
