@@ -56,6 +56,11 @@ public:
 bool operator==(const Point &position1, const Point &position2);
 bool operator==(const Astar_cost &grid1, const Astar_cost &grid2);
 
+//Overload < operator for priority queue
+struct compare_cost_f{
+	bool operator()(const std::shared_ptr<Astar_cost> &grid1, const std::shared_ptr<Astar_cost> &grid2);
+};
+
 std::shared_ptr<Astar_cost> minimum_cost_f(std::stack<std::shared_ptr<Astar_cost>> list);
 
 void delete_element_stack(std::stack<std::shared_ptr<Astar_cost>> &list, Astar_cost element);

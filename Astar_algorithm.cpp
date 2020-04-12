@@ -1,5 +1,7 @@
 #include "Astar_algorithm.h"
 #include <math.h>
+#include <queue>
+#include <vector>
 
 Astar_cost::Astar_cost(Point point){
 	//TODO: Create exception throwing for x,y
@@ -52,6 +54,11 @@ bool operator==(const Astar_cost &grid1, const Astar_cost &grid2){
 			&& (grid1.get_cost_f() == grid2.get_cost_f()) && (grid1.get_parent() == grid2.get_parent()));
 }
 
+//Overload > operator for the priority queue (get min cost_f on top)
+bool compare_cost_f::operator()(const std::shared_ptr<Astar_cost> &grid1, const std::shared_ptr<Astar_cost> &grid2){
+	return (grid1->get_cost_f() > grid2->get_cost_f());
+}
+
 std::shared_ptr<Astar_cost> minimum_cost_f(std::stack<std::shared_ptr<Astar_cost>> list){
 	std::shared_ptr<Astar_cost> min_f = list.top();
 	
@@ -95,6 +102,17 @@ bool find_lower_cost_f(std::stack<std::shared_ptr<Astar_cost>> list, std::shared
 	return false;
 }
 
+bool find_lower_cost_f(std::priority_queue<std::shared_ptr<Astar_cost>, std::vector<std::shared_ptr<Astar_cost>>, compare_cost_f> list, std::shared_ptr<Astar_cost> element){
+	while(!list.empty()){
+		if((list.top())->get_position() == element->get_position()){
+			//Assume there can bever be multiple elements in the list that have the same (x,y)
+			return ((list.top())->get_cost_f() <= element->get_cost_f());
+		}
+		list.pop();
+	}
+	return false;
+}
+
 void insert_path(grid *grid1, std::shared_ptr<Astar_cost> Astar_path){
 	//skip the start and final point of the path
 	Astar_path = Astar_path->get_parent();
@@ -106,19 +124,22 @@ void insert_path(grid *grid1, std::shared_ptr<Astar_cost> Astar_path){
 
 
 std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Point goal_point){
-	//TODO:Implement Priority queue
 	std::shared_ptr<Astar_cost> start_position(new Astar_cost(start_point));
 
-	std::stack<std::shared_ptr<Astar_cost>> open_list;
+	std::priority_queue<std::shared_ptr<Astar_cost>, std::vector<std::shared_ptr<Astar_cost>>, compare_cost_f> open_list; 
+	//std::stack<std::shared_ptr<Astar_cost>> open_list;
 	std::stack<std::shared_ptr<Astar_cost>> closed_list;
 
 	open_list.push(start_position);
-	
-	std::shared_ptr<Astar_cost> current_position;
+
+	std::shared_ptr<Astar_cost> current_position, curr_pos1;
 	while(!open_list.empty()){
 		//Find the minimum F in the open stack
-		current_position = minimum_cost_f(open_list);
-		delete_element_stack(open_list, *current_position);
+		//current_position = minimum_cost_f(open_list);
+		//delete_element_stack(open_list, *current_position);
+
+		current_position = open_list.top();
+		open_list.pop();
 
 		//Generate successor paths
 		Point successor_point;

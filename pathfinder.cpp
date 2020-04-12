@@ -6,7 +6,7 @@ int main(){
 
 	grid g1;
 	//TODO:Implement test cases
-	Point start_point = {0,3};
+	Point start_point = {0,18};
 	Point end_point = {19,19};
 	//Define start and end point
 	g1.insert_point(start_point,'S');
