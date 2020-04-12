@@ -122,7 +122,32 @@ void insert_path(grid *grid1, std::shared_ptr<Astar_cost> Astar_path){
 	}
 }
 
+/*
+ * A* Search Algorithm
+1.  Initialize the open list
+2.  Initialize the closed list
+    put the starting node on the open list
 
+3.  while the open list is not empty
+	a) find the node with the least f on the open list, call it "q"
+	b) pop q off the open list
+		         
+	c) generate q's 8 successors (skip parent) and set their parents to q (skip the invalid successors)
+	     
+	d) for each valid successor
+		i) if successor is the goal, stop search
+		successor.g = q.g + distance between successor and q
+		successor.h = distance from goal to successor (euclidean distance)
+		successor.f = successor.g + successor.h
+
+		ii) if a node with the same position as successor is in the OPEN list which has a lower f than successor, skip this successor
+ 		iii) if a node with the same position as successor  is in the CLOSED list which has a lower f than successor, skip this successor
+		otherwise, add  the node to the open list
+	end (for loop)
+	e) push q on the closed list
+     end (while loop) 
+ * 
+*/
 std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Point goal_point){
 	std::shared_ptr<Astar_cost> start_position(new Astar_cost(start_point));
 
@@ -132,7 +157,7 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 
 	open_list.push(start_position);
 
-	std::shared_ptr<Astar_cost> current_position, curr_pos1;
+	std::shared_ptr<Astar_cost> current_position;
 	while(!open_list.empty()){
 		//Find the minimum F in the open stack
 		//current_position = minimum_cost_f(open_list);
@@ -166,7 +191,7 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 					continue;
 				}
 
-				//std::cout << successor_point.x << " : " << successor_point.y << std::endl;	
+				//Create successor point for valid point and set parent to current position
 				std::shared_ptr<Astar_cost> successor_position(new Astar_cost(successor_point));
 				successor_position->insert_parent(current_position);
 
@@ -179,11 +204,8 @@ std::shared_ptr<Astar_cost> Astar_algorithm(grid *grid1, Point start_point, Poin
 				successor_position->calculate_cost_h(goal_point);
 				successor_position->calculate_cost_f();
 
-				if(find_lower_cost_f(open_list, successor_position)){
-					continue;
-				}
-
-				if(find_lower_cost_f(closed_list, successor_position)){
+				//Skip all the paths where there is already a lower cost path to that point
+				if(find_lower_cost_f(open_list, successor_position) || find_lower_cost_f(closed_list, successor_position)){
 					continue;
 				}
 
